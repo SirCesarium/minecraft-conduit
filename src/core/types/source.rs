@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 pub enum VersionConstraint {
@@ -14,7 +15,15 @@ pub enum ManifestSource {
     Local(PathBuf),
 }
 
+pub struct Hashes {
+    pub algorithms: BTreeMap<Box<str>, Box<str>>,
+}
+
 pub enum LockfileSource {
-    Modrinth { id: Box<str>, version: Box<str> },
+    Modrinth {
+        id: Box<str>,
+        version: Box<str>,
+        hashes: Hashes,
+    },
     Local(PathBuf),
 }

@@ -16,11 +16,15 @@ pub enum ManifestAddon {
 
 pub enum LockfileAddon {
     Mod {
+        id: Box<str>,
         loader: LoaderKind,
         source: LockfileSource,
+        dependencies: Vec<Box<str>>,
     },
     Plugin {
+        id: Box<str>,
         loader: LoaderKind,
         source: LockfileSource,
+        dependencies: Vec<Box<str>>,
     },
 }
