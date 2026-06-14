@@ -16,12 +16,12 @@ name = "conduit"
 required-features = ["cli"]
 
 [features]
-cli = []
+cli = ["dep:clap", "dep:miette"]
 
 [dependencies]
-clap = { version = "4.6.1", default-features = false, features = ["std", "color", "derive", "help", "usage", "error-context", "suggestions"] }
-enderpearl = { version = "1.0.0", default-features = false }
-miette = { version = "7.6.0", default-features = false, features = ["fancy"] }
+clap = { version = "4.6.1", optional = true, default-features = false, features = ["std", "color", "derive", "help", "usage", "error-context", "suggestions"] }
+enderpearl = { version = "1.0.1", default-features = false }
+miette = { version = "7.6.0", optional = true, default-features = false, features = ["fancy"] }
 minecraft_registry_api = { version = "1.0.1", default-features = false, features = ["mojang", "modrinth", "neoforge"] }
 modcrawl = { version = "0.5.0", default-features = false }
 reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
@@ -44,3 +44,14 @@ assets = [
 assets = [
     { source = "target/release/conduit", dest = "/usr/bin/conduit", mode = "755" },
 ]
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+absolute_paths = "deny"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
