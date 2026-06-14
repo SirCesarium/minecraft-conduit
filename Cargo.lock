@@ -329,6 +329,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ddb117e43bbf7dacf0a4190fef4d345b9bad68dfc649cb349e7d17d28428e51"
 dependencies = [
  "clap_builder",
+ "clap_derive",
 ]
 
 [[package]]
@@ -341,6 +342,18 @@ dependencies = [
  "anstyle",
  "clap_lex",
  "strsim",
+]
+
+[[package]]
+name = "clap_derive"
+version = "4.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2ce8604710f6733aa641a2b3731eaa1e8b3d9973d5e3565da11800813f997a9"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -633,9 +646,9 @@ dependencies = [
 
 [[package]]
 name = "enderpearl"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72b180156340747fc92674e1d5a51b5763c370c3ee1314affc701d06b00794ba"
+checksum = "e3b8b2ef43985355017c3ae378f357babc6ced03620adc0d680a42afce1e73dc"
 dependencies = [
  "anyhow",
  "refractium",
@@ -1339,9 +1352,17 @@ checksum = "6877bb514081ee2a7ff5ef9de3281f14a4dd4bceac4c09388074a6b5df8a139a"
 name = "minecraft_conduit"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "enderpearl",
+ "miette",
  "minecraft_registry_api",
  "modcrawl",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "toml 0.8.23",
  "zipcrawl",
 ]
 
