@@ -9,9 +9,16 @@ pub enum VersionConstraint {
 
 pub enum ManifestSource {
     Modrinth {
-        slug: Box<str>,
+        slug: Option<Box<str>>,
         version: VersionConstraint,
     },
+    GitHub {
+        owner: Box<str>,
+        repo: Box<str>,
+        tag: VersionConstraint,
+        file: Box<str>,
+    },
+    Url(Box<str>),
     Local(PathBuf),
 }
 
@@ -21,9 +28,26 @@ pub struct Hashes {
 
 pub enum LockfileSource {
     Modrinth {
-        id: Box<str>,
-        version: Box<str>,
+        project_id: Box<str>,
+        version_id: Box<str>,
+        filename: Box<str>,
+        url: Box<str>,
         hashes: Hashes,
     },
-    Local(PathBuf),
+    GitHub {
+        owner: Box<str>,
+        repo: Box<str>,
+        tag: Box<str>,
+        filename: Box<str>,
+        url: Box<str>,
+        hashes: Hashes,
+    },
+    Url {
+        url: Box<str>,
+        hashes: Hashes,
+    },
+    Local {
+        filename: Box<str>,
+        hashes: Hashes,
+    },
 }
