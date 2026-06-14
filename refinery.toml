@@ -1,0 +1,57 @@
+version = 1
+platform = "github"
+lang = "rust"
+toolchain = "stable"
+
+[[artifacts]]
+type = "bin"
+name = "conduit"
+outputName = "conduit-{os}-{arch}-{abi}"
+features = ["cli"]
+
+# --- LINUX ---
+[[targets]]
+id = "linux-gnu"
+for = "conduit"
+os = "linux"
+arch = ["x86_64", "arm64"]
+abi = "gnu"
+type = "bin"
+packages = ["bin", "deb", "rpm"]
+
+# --- WINDOWS ---
+[[targets]]
+id = "windows-msvc"
+for = "conduit"
+os = "windows"
+arch = ["x86_64", "arm64"]
+abi = "msvc"
+type = "bin"
+packages = ["bin", "msi"]
+
+# --- MACOS ---
+[[targets]]
+id = "macos"
+for = "conduit"
+os = "macos"
+arch = ["x86_64", "arm64"]
+type = "bin"
+packages = ["bin"]
+
+# --- PUBLISH ---
+[[publish]]
+type = "builtin"
+builtin = "download_artifact"
+targets = "all"
+
+[[publish]]
+type = "builtin"
+builtin = "github_release"
+targets = "all"
+
+[[publish]]
+type = "composite"
+name = "Publish to crates.io"
+action = "cargo-publish"
+secrets = ["CRATES_TOKEN"]
+targets = "once"

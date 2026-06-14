@@ -1,66 +1,32 @@
 [package]
-name = "conduit-cli"
-version = "0.4.2"
+name = "minecraft_conduit"
+version = "0.1.0"
 edition = "2024"
 authors = ["SirCesarium"]
-description = "A lightning-fast Minecraft mod manager"
+description = "Minecraft Server Manager"
 repository = "https://github.com/SirCesarium/conduit-cli"
 homepage = "https://github.com/SirCesarium/conduit-cli"
 license = "MIT"
 
-[dependencies]
-clap = { version = "4.6.1", features = ["derive"], optional = true }
-console = { version = "0.16.3", optional = true }
-dirs = "6.0.0"
-futures-util = "0.3.32"
-glob = "0.3.3"
-ignore = "0.4.25"
-indicatif = { version = "0.18.4", optional = true }
-inquire = { version = "0.9.4", optional = true }
-miette = { version = "7.6.0", features = ["fancy"] }
-quick-xml = { version = "0.40.1", features = ["serialize"] }
-reqwest = { version = "0.13.4", features = ["json", "rustls", "stream"] }
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.150"
-sha1 = "0.11.0"
-sha2 = "0.11.0"
-strum = { version = "0.28.0", features = ["derive"] }
-thiserror = "2.0.18"
-tokio = { version = "1.50.0", features = ["full"] }
-toml = "1.1.2"
-uuid = { version = "1.23.2", features = ["v4", "serde"] }
-zip = "8.6.0"
-
-[target.'cfg(unix)'.dependencies]
-libc = "0.2.186"
-
-[features]
-default = ["cli"]
-cli = ["dep:clap", "dep:console", "dep:inquire", "dep:indicatif"]
+[lib]
+name = "conduit"
 
 [[bin]]
 name = "conduit"
-path = "src/main.rs"
 required-features = ["cli"]
 
-
-[package.metadata.wix]
-upgrade-guid = "74f470da-07f1-44f1-9262-1681c2f47aa1"
-path = true
+[features]
+cli = []
 
 [package.metadata.deb]
 maintainer = "SirCesarium"
-assets = [["target/release/conduit", "/usr/bin/conduit", "755"]]
+section = "net"
+priority = "optional"
+assets = [
+    ["target/release/conduit", "usr/bin/", "755"],
+]
 
 [package.metadata.generate-rpm]
 assets = [
-  { source = "target/release/conduit", dest = "/usr/bin/conduit", mode = "755" },
+    { source = "target/release/conduit", dest = "/usr/bin/conduit", mode = "755" },
 ]
-
-[lints.clippy]
-pedantic = { level = "warn", priority = -1 }
-
-missing_errors_doc = "allow"
-missing_panics_doc = "allow"
-doc_markdown = "allow"
-must_use_candidate = "allow"
