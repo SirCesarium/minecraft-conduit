@@ -23,16 +23,16 @@ clap = { version = "4.6", optional = true, default-features = false, features = 
 enderpearl = { version = "1.0", default-features = false }
 indicatif = { version = "0.18", optional = true, default-features = false }
 inquire = { version = "0.9", optional = true, default-features = false, features = ["crossterm"] }
-miette = { version = "7.6", optional = true, default-features = false, features = ["fancy"] }
+miette = { version = "7.6", optional = true, features = ["fancy"] }
 minecraft_registry_api = { version = "1.0", default-features = false, features = ["mojang", "modrinth", "neoforge"] }
 modcrawl = { version = "0.5", default-features = false }
-owo-colors = { version = "4", optional = true, default-features = false }
+owo-colors = { version = "4", optional = true }
 reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
 serde = { version = "1", default-features = false, features = ["derive"] }
-serde_json = { version = "1", default-features = false }
-thiserror = { version = "2.0", default-features = false, features = ["std"] }
+serde_json = { version = "1", default-features = false, features = ["std"] }
+thiserror = { version = "2.0", features = ["std"] }
 tokio = { version = "1.52", default-features = false, features = ["rt", "rt-multi-thread", "macros", "process", "fs", "io-util"] }
-toml = { version = "0.8", default-features = false }
+toml = { version = "0.8", default-features = false, features = ["parse"] }
 zipcrawl = { version = "2.4", default-features = false, features = ["compress", "serde"] }
 
 [package.metadata.deb]
