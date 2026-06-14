@@ -16,6 +16,7 @@ name = "conduit"
 required-features = ["cli"]
 
 [features]
+default = ["cli"]
 cli = ["dep:clap", "dep:miette", "dep:owo-colors", "dep:inquire", "dep:indicatif"]
 
 [dependencies]
