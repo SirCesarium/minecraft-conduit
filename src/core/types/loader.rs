@@ -39,3 +39,11 @@ pub enum Loader {
         build: Box<str>,
     },
 }
+
+impl Default for Loader {
+    fn default() -> Self {
+        Self::Vanilla {
+            game_version: Box::from(""),
+        }
+    }
+}
