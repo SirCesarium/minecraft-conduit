@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 
 use reqwest::Client;
-use sha2::{Digest, Sha256};
 
 use crate::core::resolver::{ProviderResolver, ResolveContext};
 use crate::errors::{ResolveResult, ResolverError};
@@ -15,6 +14,92 @@ impl GitHubResolver {
     #[must_use]
     pub fn new(client: Client) -> Self {
         Self { client }
+    }
+
+    async fn fetch_release(&self, url: &str) -> Result<serde_json::Value, ResolverError> {
+        let resp: serde_json::Value = self
+            .client
+            .get(url)
+            .header("User-Agent", "conduit")
+            .send()
+            .await?
+            .error_for_status()?
+            .json()
+            .await?;
+        Ok(resp)
+    }
+
+    fn parse_digest(asset: &serde_json::Value) -> Result<BTreeMap<Box<str>, Box<str>>, ResolverError> {
+        let digest = asset
+            .get("digest")
+            .and_then(|d| d.as_str())
+            .ok_or_else(|| {
+                ResolverError::Message("GitHub: asset has no digest".into())
+            })?;
+
+        let parts: Vec<&str> = digest.splitn(2, ':').collect();
+        let (algo, hash) = (
+            *parts.first().ok_or_else(|| {
+                ResolverError::Message("GitHub: malformed digest".into())
+            })?,
+            *parts.get(1).ok_or_else(|| {
+                ResolverError::Message("GitHub: malformed digest".into())
+            })?,
+        );
+
+        let mut algorithms = BTreeMap::new();
+        algorithms.insert(algo.into(), hash.into());
+        Ok(algorithms)
+    }
+
+    fn resolve_from_release(
+        release: &serde_json::Value,
+        owner: &str,
+        repo: &str,
+        file: &str,
+    ) -> ResolveResult {
+        let tag = release
+            .get("tag_name")
+            .and_then(|t| t.as_str())
+            .ok_or_else(|| {
+                ResolverError::Message("GitHub: release has no tag_name".into())
+            })?;
+
+        let assets = release
+            .get("assets")
+            .and_then(|a| a.as_array())
+            .ok_or_else(|| {
+                ResolverError::Message("GitHub: no assets in release".into())
+            })?;
+
+        let asset = assets
+            .iter()
+            .find(|a| a.get("name").and_then(|n| n.as_str()) == Some(file))
+            .ok_or_else(|| {
+                ResolverError::Message(
+                    format!("GitHub: asset '{file}' not found in release {tag}").into(),
+                )
+            })?;
+
+        let download_url = asset
+            .get("browser_download_url")
+            .and_then(|u| u.as_str())
+            .ok_or_else(|| {
+                ResolverError::Message(
+                    "GitHub: asset has no download URL".into(),
+                )
+            })?;
+
+        let algorithms = Self::parse_digest(asset)?;
+
+        Ok(LockfileSource::GitHub {
+            owner: owner.into(),
+            repo: repo.into(),
+            tag: tag.into(),
+            filename: file.into(),
+            url: download_url.into(),
+            hashes: Hashes { algorithms },
+        })
     }
 }
 
@@ -57,106 +142,15 @@ impl ProviderResolver for GitHubResolver {
                 let url = format!(
                     "https://api.github.com/repos/{owner}/{repo}/releases/latest"
                 );
-                let resp: serde_json::Value = self
-                    .client
-                    .get(&url)
-                    .header("User-Agent", "conduit")
-                    .send()
-                    .await?
-                    .error_for_status()?
-                    .json()
-                    .await?;
-                let t = resp
-                    .get("tag_name")
-                    .and_then(|v| v.as_str())
-                    .ok_or_else(|| {
-                        ResolverError::Message(
-                            "GitHub: could not determine latest tag".into(),
-                        )
-                    })?;
-                // Can't return reference to local, download directly
-                return self.download_asset(owner, repo, t, file).await;
+                let release = self.fetch_release(&url).await?;
+                return Self::resolve_from_release(&release, owner, repo, file);
             }
         };
 
-        self.download_asset(owner, repo, tag_str, file).await
-    }
-}
-
-impl GitHubResolver {
-    fn compute_sha256(data: &[u8]) -> Box<str> {
-        let hash = Sha256::digest(data);
-        hash.iter().map(|b| format!("{b:02x}")).collect::<String>().into()
-    }
-
-    async fn download_asset(
-        &self,
-        owner: &str,
-        repo: &str,
-        tag: &str,
-        file: &str,
-    ) -> ResolveResult {
-        let api_url = format!(
-            "https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag}"
+        let url = format!(
+            "https://api.github.com/repos/{owner}/{repo}/releases/tags/{tag_str}"
         );
-
-        let resp: serde_json::Value = self
-            .client
-            .get(&api_url)
-            .header("User-Agent", "conduit")
-            .send()
-            .await?
-            .error_for_status()?
-            .json()
-            .await?;
-
-        let assets = resp
-            .get("assets")
-            .and_then(|a| a.as_array())
-            .ok_or_else(|| {
-                ResolverError::Message("GitHub: no assets in release".into())
-            })?;
-
-        let asset = assets
-            .iter()
-            .find(|a| a.get("name").and_then(|n| n.as_str()) == Some(file))
-            .ok_or_else(|| {
-                ResolverError::Message(
-                    format!("GitHub: asset '{file}' not found in release {tag}").into(),
-                )
-            })?;
-
-        let download_url = asset
-            .get("url")
-            .and_then(|u| u.as_str())
-            .ok_or_else(|| {
-                ResolverError::Message(
-                    "GitHub: asset has no download URL".into(),
-                )
-            })?;
-
-        let data = self
-            .client
-            .get(download_url)
-            .header("User-Agent", "conduit")
-            .header("Accept", "application/octet-stream")
-            .send()
-            .await?
-            .error_for_status()?
-            .bytes()
-            .await?;
-
-        let sha256 = Self::compute_sha256(&data);
-        let mut algorithms = BTreeMap::new();
-        algorithms.insert("sha256".into(), sha256);
-
-        Ok(LockfileSource::GitHub {
-            owner: (*owner).into(),
-            repo: (*repo).into(),
-            tag: (*tag).into(),
-            filename: (*file).into(),
-            url: download_url.into(),
-            hashes: Hashes { algorithms },
-        })
+        let release = self.fetch_release(&url).await?;
+        Self::resolve_from_release(&release, owner, repo, file)
     }
 }
