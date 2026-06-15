@@ -1,8 +1,18 @@
-use std::error::Error;
-use std::fmt;
 use std::future::Future;
 
-use crate::core::types::source::{LockfileSource, ManifestSource};
+use crate::core::types::loader::LoaderKind;
+use crate::core::types::source::ManifestSource;
+use crate::errors::ResolveResult;
+
+pub mod github;
+pub mod local;
+pub mod modrinth;
+pub mod url;
+
+pub struct ResolveContext {
+    pub game_version: Box<str>,
+    pub loader: LoaderKind,
+}
 
 pub trait ProviderResolver {
     fn is_updatable(&self) -> bool;
@@ -12,18 +22,6 @@ pub trait ProviderResolver {
         &self,
         id: &str,
         source: &ManifestSource,
-    ) -> impl Future<Output = Result<LockfileSource, ResolverError>>;
+        ctx: &ResolveContext,
+    ) -> impl Future<Output = ResolveResult>;
 }
-
-#[derive(Debug)]
-pub struct ResolverError {
-    pub message: Box<str>,
-}
-
-impl fmt::Display for ResolverError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.message)
-    }
-}
-
-impl Error for ResolverError {}

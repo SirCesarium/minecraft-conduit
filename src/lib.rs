@@ -1,3 +1,5 @@
+pub mod errors;
+
 // Internal
 pub(crate) mod core;
 
