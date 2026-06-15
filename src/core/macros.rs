@@ -1,4 +1,4 @@
-/// `version!(exact "1.21.4")`, `version!(latest)`, `version!(range ">=1.21")`
+/// `version!(exact "1.21.4")` or `version!(latest)`
 #[macro_export]
 macro_rules! version {
     (exact $v:expr) => {
@@ -6,9 +6,6 @@ macro_rules! version {
     };
     (latest) => {
         $crate::core::types::source::VersionConstraint::Latest
-    };
-    (range $v:expr) => {
-        $crate::core::types::source::VersionConstraint::Range($v.into())
     };
 }
 

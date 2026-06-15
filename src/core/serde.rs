@@ -10,21 +10,8 @@ impl Serialize for VersionConstraint {
         match self {
             Self::Exact(v) => serializer.serialize_str(v),
             Self::Latest => serializer.serialize_str("latest"),
-            Self::Range(v) => serializer.serialize_str(v),
         }
     }
-}
-
-fn is_inexact(s: &str) -> bool {
-    s.starts_with('^')
-        || s.starts_with('~')
-        || s.starts_with('>')
-        || s.starts_with('<')
-        || s.starts_with('=')
-        || s.contains(',')
-        || s.contains('x')
-        || s.contains('X')
-        || s.contains('*')
 }
 
 impl<'de> Deserialize<'de> for VersionConstraint {
@@ -35,13 +22,12 @@ impl<'de> Deserialize<'de> for VersionConstraint {
             type Value = VersionConstraint;
 
             fn expecting(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.write_str("a version string like \"1.0.0\", \"latest\", or \">=1.21\"")
+                f.write_str("a version string like \"1.0.0\" or \"latest\"")
             }
 
             fn visit_str<E: de::Error>(self, v: &str) -> Result<VersionConstraint, E> {
                 match v {
                     "latest" | "*" => Ok(VersionConstraint::Latest),
-                    s if is_inexact(s) => Ok(VersionConstraint::Range(s.into())),
                     s => Ok(VersionConstraint::Exact(s.into())),
                 }
             }

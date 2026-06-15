@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 pub enum VersionConstraint {
     Exact(Box<str>),
     Latest,
-    Range(Box<str>),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
