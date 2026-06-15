@@ -3,6 +3,7 @@
 #[macro_use]
 pub mod macros;
 pub mod loader;
+pub mod ops;
 pub mod resolver;
 pub mod schema;
 pub mod serde;
