@@ -1,8 +1,12 @@
+use serde::{Deserialize, Serialize};
+
 use crate::core::types::{
     loader::LoaderKind,
     source::{LockfileSource, ManifestSource},
 };
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
 pub enum ManifestAddon {
     Mod {
         loader: LoaderKind,
@@ -14,6 +18,8 @@ pub enum ManifestAddon {
     },
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
 pub enum LockfileAddon {
     Mod {
         loader: LoaderKind,

@@ -1,13 +1,19 @@
-#[derive(Clone, Copy)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum LoaderKind {
     Vanilla,
     Fabric,
     Forge,
+    #[serde(rename = "neoforge")]
     NeoForge,
     Paper,
     Purpur,
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
 pub enum Loader {
     Vanilla {
         game_version: Box<str>,
@@ -20,6 +26,7 @@ pub enum Loader {
         version: Box<str>,
         game_version: Box<str>,
     },
+    #[serde(rename = "neoforge")]
     NeoForge {
         version: Box<str>,
     },
