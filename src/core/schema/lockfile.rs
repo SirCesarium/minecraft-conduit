@@ -11,3 +11,26 @@ pub struct ConduitLockfile {
     pub loader: Loader,
     pub dependencies: BTreeMap<Box<str>, LockfileAddon>,
 }
+
+impl Default for ConduitLockfile {
+    fn default() -> Self {
+        Self {
+            lock_version: 1,
+            java: None,
+            loader: Loader::default(),
+            dependencies: BTreeMap::new(),
+        }
+    }
+}
+
+impl ConduitLockfile {
+    #[must_use]
+    pub fn new(lock_version: u32, loader: Loader, java: Option<Box<str>>) -> Self {
+        Self {
+            lock_version,
+            java,
+            loader,
+            dependencies: BTreeMap::new(),
+        }
+    }
+}
