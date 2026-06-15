@@ -97,7 +97,7 @@ macro_rules! manifest {
         $( deps.insert($key.into(), $addon); )*
         $crate::core::schema::manifest::ConduitManifest {
             name: $name.into(),
-            java_min_version: Some($java.into()),
+            java: Some($java.into()),
             loader: $loader,
             dependencies: deps,
         }
@@ -113,7 +113,7 @@ macro_rules! manifest {
         $( deps.insert($key.into(), $addon); )*
         $crate::core::schema::manifest::ConduitManifest {
             name: $name.into(),
-            java_min_version: None,
+            java: None,
             loader: $loader,
             dependencies: deps,
         }
@@ -141,7 +141,7 @@ macro_rules! lockfile {
         $( deps.insert($key.into(), $addon); )*
         $crate::core::schema::lockfile::ConduitLockfile {
             lock_version: $lock_version,
-            java_min_version: Some($java.into()),
+            java: Some($java.into()),
             loader: $loader,
             dependencies: deps,
         }
@@ -157,7 +157,7 @@ macro_rules! lockfile {
         $( deps.insert($key.into(), $addon); )*
         $crate::core::schema::lockfile::ConduitLockfile {
             lock_version: $lock_version,
-            java_min_version: None,
+            java: None,
             loader: $loader,
             dependencies: deps,
         }
