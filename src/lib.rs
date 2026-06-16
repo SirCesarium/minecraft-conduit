@@ -1,6 +1,5 @@
 pub mod errors;
 
-// Internal
 pub mod core;
 
 #[cfg(feature = "cli")]
