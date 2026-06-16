@@ -1,8 +1,10 @@
 use std::collections::BTreeMap;
 
 use reqwest::Client;
+use serde_json::Value;
 
-use crate::core::resolver::{ProviderResolver, ResolveContext};
+use crate::core::context::ConduitContext;
+use crate::core::resolver::ProviderResolver;
 use crate::errors::{ResolveResult, ResolverError};
 use crate::core::types::source::{Hashes, LockfileSource, ManifestSource, VersionConstraint};
 
@@ -16,8 +18,8 @@ impl GitHubResolver {
         Self { client }
     }
 
-    async fn fetch_release(&self, url: &str) -> Result<serde_json::Value, ResolverError> {
-        let resp: serde_json::Value = self
+    async fn fetch_release(&self, url: &str) -> Result<Value, ResolverError> {
+        let resp: Value = self
             .client
             .get(url)
             .header("User-Agent", "conduit")
@@ -29,7 +31,7 @@ impl GitHubResolver {
         Ok(resp)
     }
 
-    fn parse_digest(asset: &serde_json::Value) -> Result<BTreeMap<Box<str>, Box<str>>, ResolverError> {
+    fn parse_digest(asset: &Value) -> Result<BTreeMap<Box<str>, Box<str>>, ResolverError> {
         let digest = asset
             .get("digest")
             .and_then(|d| d.as_str())
@@ -53,7 +55,7 @@ impl GitHubResolver {
     }
 
     fn resolve_from_release(
-        release: &serde_json::Value,
+        release: &Value,
         owner: &str,
         repo: &str,
         file: &str,
@@ -120,7 +122,7 @@ impl ProviderResolver for GitHubResolver {
         &self,
         _id: &str,
         source: &ManifestSource,
-        _ctx: &ResolveContext,
+        _ctx: &ConduitContext,
     ) -> ResolveResult {
         let (owner, repo, tag, file) = match source {
             ManifestSource::GitHub {

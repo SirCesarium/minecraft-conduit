@@ -3,7 +3,8 @@ use std::collections::BTreeMap;
 use reqwest::Client;
 use sha2::{Digest, Sha256};
 
-use crate::core::resolver::{ProviderResolver, ResolveContext};
+use crate::core::context::ConduitContext;
+use crate::core::resolver::ProviderResolver;
 use crate::errors::{ResolveResult, ResolverError};
 use crate::core::types::source::{Hashes, LockfileSource, ManifestSource};
 
@@ -35,7 +36,7 @@ impl ProviderResolver for UrlResolver {
         &self,
         _id: &str,
         source: &ManifestSource,
-        _ctx: &ResolveContext,
+        _ctx: &ConduitContext,
     ) -> ResolveResult {
         let url_str = match source {
             ManifestSource::Url(u) => u.as_ref(),

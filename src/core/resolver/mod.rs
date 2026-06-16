@@ -1,6 +1,6 @@
 use std::future::Future;
 
-use crate::core::types::loader::LoaderKind;
+use crate::core::context::ConduitContext;
 use crate::core::types::source::ManifestSource;
 use crate::errors::ResolveResult;
 
@@ -8,11 +8,6 @@ pub mod github;
 pub mod local;
 pub mod modrinth;
 pub mod url;
-
-pub struct ResolveContext {
-    pub game_version: Box<str>,
-    pub loader: LoaderKind,
-}
 
 pub trait ProviderResolver {
     fn is_updatable(&self) -> bool;
@@ -22,6 +17,6 @@ pub trait ProviderResolver {
         &self,
         id: &str,
         source: &ManifestSource,
-        ctx: &ResolveContext,
+        ctx: &ConduitContext,
     ) -> impl Future<Output = ResolveResult>;
 }

@@ -4,7 +4,8 @@ use std::path::Path;
 use sha2::{Digest, Sha256};
 use tokio::fs;
 
-use crate::core::resolver::{ProviderResolver, ResolveContext};
+use crate::core::context::ConduitContext;
+use crate::core::resolver::ProviderResolver;
 use crate::errors::{ResolveResult, ResolverError};
 use crate::core::types::source::{Hashes, LockfileSource, ManifestSource};
 
@@ -40,7 +41,7 @@ impl ProviderResolver for LocalResolver {
         &self,
         _id: &str,
         source: &ManifestSource,
-        _ctx: &ResolveContext,
+        _ctx: &ConduitContext,
     ) -> ResolveResult {
         let path = match source {
             ManifestSource::Local(p) => p,

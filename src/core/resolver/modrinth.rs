@@ -1,9 +1,12 @@
 use std::collections::BTreeMap;
 
+use reqwest::Client;
+
 use minecraft_registry_api::modrinth::models::{ProjectRef, VersionListQuery};
 use minecraft_registry_api::modrinth::ModrinthClient;
 
-use crate::core::resolver::{ProviderResolver, ResolveContext};
+use crate::core::context::ConduitContext;
+use crate::core::resolver::ProviderResolver;
 use crate::core::types::loader::LoaderKind;
 use crate::errors::{ResolveResult, ResolverError};
 use crate::core::types::source::{Hashes, LockfileSource, ManifestSource, VersionConstraint};
@@ -26,7 +29,7 @@ pub struct ModrinthResolver {
 
 impl ModrinthResolver {
     #[must_use]
-    pub fn new(client: reqwest::Client) -> Self {
+    pub fn new(client: Client) -> Self {
         Self {
             client: ModrinthClient::new(client),
         }
@@ -50,7 +53,7 @@ impl ProviderResolver for ModrinthResolver {
         &self,
         id: &str,
         source: &ManifestSource,
-        ctx: &ResolveContext,
+        ctx: &ConduitContext,
     ) -> ResolveResult {
         let (slug_opt, version) = match source {
             ManifestSource::Modrinth { slug, version } => (slug, version),
@@ -63,9 +66,19 @@ impl ProviderResolver for ModrinthResolver {
 
         let slug: &str = slug_opt.as_deref().unwrap_or(id);
 
-        let Some(loader) = loader_to_modrinth(ctx.loader) else {
+        let loader_kind = ctx.loader_kind().ok_or_else(|| {
+            ResolverError::Message("ConduitContext has no manifest loaded".into())
+        })?;
+
+        let Some(loader) = loader_to_modrinth(loader_kind) else {
             return Err(ResolverError::Message(
                 "Vanilla loader is not supported for Modrinth resolution".into(),
+            ));
+        };
+
+        let Some(game_version) = ctx.game_version() else {
+            return Err(ResolverError::Message(
+                "No game version in manifest".into(),
             ));
         };
 
@@ -79,8 +92,6 @@ impl ProviderResolver for ModrinthResolver {
             .client
             .get_versions(VersionListQuery { project_id })
             .await?;
-
-        let game_version = ctx.game_version.as_ref();
 
         let matching: Vec<_> = versions
             .into_iter()

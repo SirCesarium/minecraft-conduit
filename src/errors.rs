@@ -1,5 +1,6 @@
 use std::io;
 
+use reqwest::Error as ReqwestError;
 use thiserror::Error;
 
 use minecraft_registry_api::error::ApiError;
@@ -32,8 +33,8 @@ pub enum ResolverError {
     },
 }
 
-impl From<reqwest::Error> for ResolverError {
-    fn from(e: reqwest::Error) -> Self {
+impl From<ReqwestError> for ResolverError {
+    fn from(e: ReqwestError) -> Self {
         Self::Message(e.to_string().into())
     }
 }
