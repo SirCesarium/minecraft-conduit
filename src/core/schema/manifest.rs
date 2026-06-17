@@ -28,4 +28,18 @@ impl ConduitManifest {
             dependencies: Vec::new(),
         }
     }
+
+    pub fn add_dependency(&mut self, dep: ManifestAddon) {
+        self.dependencies.push(dep);
+    }
+
+    pub fn remove_dependency(&mut self, id: &str) -> Option<ManifestAddon> {
+        let pos = self.dependencies.iter().position(|d| d.id == id)?;
+        Some(self.dependencies.remove(pos))
+    }
+
+    #[must_use]
+    pub fn has_dependency(&self, id: &str) -> bool {
+        self.dependencies.iter().any(|d| d.id == id)
+    }
 }

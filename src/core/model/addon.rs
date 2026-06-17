@@ -31,7 +31,6 @@ pub struct ManifestAddon {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LockfileAddon {
-    pub id: String,
     pub kind: AddonKind,
     pub side: Side,
     pub loader: LoaderKind,
