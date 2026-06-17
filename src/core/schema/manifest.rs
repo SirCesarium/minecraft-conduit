@@ -1,48 +1,29 @@
-use std::collections::BTreeMap;
+use crate::core::model::{addon::ManifestAddon, loader::Loader};
 
-use serde::{Deserialize, Serialize};
-
-use crate::core::types::{addon::ManifestAddon, loader::Loader};
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ConduitManifest {
-    pub name: Box<str>,
-    pub java: Option<Box<str>>,
+    pub name: String,
     pub loader: Loader,
-    pub dependencies: BTreeMap<Box<str>, ManifestAddon>,
+    pub dependencies: Vec<ManifestAddon>,
 }
 
 impl Default for ConduitManifest {
     fn default() -> Self {
         Self {
-            name: Box::from("my-server"),
-            java: None,
+            name: "my-server".to_string(),
             loader: Loader::default(),
-            dependencies: BTreeMap::new(),
+            dependencies: Vec::new(),
         }
     }
 }
 
-pub(crate) fn sanitize_name(input: &str) -> Box<str> {
-    let sanitized: String = input
-        .chars()
-        .map(|c| match c {
-            'A'..='Z' => c.to_ascii_lowercase(),
-            'a'..='z' | '0'..='9' | '-' | '_' => c,
-            _ => '-',
-        })
-        .collect();
-    sanitized.into()
-}
-
 impl ConduitManifest {
     #[must_use]
-    pub fn new(name: &str, loader: Loader, java: Option<Box<str>>) -> Self {
+    pub fn new(name: &str, loader: Loader) -> Self {
         Self {
-            name: sanitize_name(name),
-            java,
+            name: name.into(),
             loader,
-            dependencies: BTreeMap::new(),
+            dependencies: Vec::new(),
         }
     }
 }

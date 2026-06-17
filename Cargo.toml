@@ -25,7 +25,7 @@ enderpearl = { version = "1.0", default-features = false }
 indicatif = { version = "0.18", optional = true, default-features = false }
 inquire = { version = "0.9", optional = true, default-features = false, features = ["crossterm"] }
 miette = { version = "7.6", optional = true, features = ["fancy"] }
-minecraft_registry_api = { version = "1.0", default-features = false, features = ["mojang", "modrinth", "neoforge"] }
+minecraft_registry_api = { version = "1.0", default-features = false, features = ["mojang", "modrinth", "neoforge", "fabric", "forge", "paper", "purpur"] }
 modcrawl = { version = "0.5", default-features = false }
 owo-colors = { version = "4", optional = true }
 reqwest = { version = "0.13", default-features = false, features = ["json", "rustls", "stream"] }
