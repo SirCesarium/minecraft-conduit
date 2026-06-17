@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::core::model::{addon::ManifestAddon, loader::Loader};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ConduitManifest {
     pub name: String,
     pub loader: Loader,
