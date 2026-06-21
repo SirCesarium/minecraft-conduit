@@ -663,9 +663,9 @@ dependencies = [
 
 [[package]]
 name = "enderpearl"
-version = "1.0.1"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3b8b2ef43985355017c3ae378f357babc6ced03620adc0d680a42afce1e73dc"
+checksum = "a6e0c51cf9e0432c66e58fd9f55400601a5965550575c832736e50718e37bdb5"
 dependencies = [
  "anyhow",
  "refractium",
@@ -1436,9 +1436,9 @@ dependencies = [
 
 [[package]]
 name = "minecraft_registry_api"
-version = "1.0.1"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8b7db824b1fccf761f392a8c5304b7cc991625f3fb8ca6c9757750e8c14d266"
+checksum = "3229bc93b5b9df6a9d07eac5b54527211f9b24a2ee5e48d317887d8f7a072165"
 dependencies = [
  "cbindgen",
  "quick-xml 0.40.1",

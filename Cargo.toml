@@ -21,11 +21,11 @@ cli = ["dep:clap", "dep:miette", "dep:owo-colors", "dep:inquire", "dep:indicatif
 
 [dependencies]
 clap = { version = "4.6", optional = true, default-features = false, features = ["std", "color", "derive", "help", "usage", "error-context", "suggestions"] }
-enderpearl = { version = "1.0", default-features = false }
+enderpearl = { version = "2.0", default-features = false }
 indicatif = { version = "0.18", optional = true, default-features = false }
 inquire = { version = "0.9", optional = true, default-features = false, features = ["crossterm"] }
 miette = { version = "7.6", optional = true, features = ["fancy"] }
-minecraft_registry_api = { version = "1.0", default-features = false, features = ["mojang", "modrinth", "neoforge", "fabric", "forge", "paper", "purpur"] }
+minecraft_registry_api = { version = "1.1", default-features = false, features = ["mojang", "modrinth", "neoforge", "fabric", "forge", "paper", "purpur"] }
 modcrawl = { version = "0.5", default-features = false }
 owo-colors = { version = "4", optional = true }
 reqwest = { version = "0.13", default-features = false, features = ["json", "rustls", "stream"] }
@@ -34,7 +34,7 @@ sha1 = { version = "0.11", default-features = false }
 sha2 = { version = "0.11", default-features = false }
 serde_json = { version = "1", default-features = false, features = ["std"] }
 thiserror = { version = "2.0", features = ["std"] }
-tokio = { version = "1.52", default-features = false, features = ["rt", "rt-multi-thread", "macros", "process", "fs", "io-util"] }
+tokio = { version = "1.52", default-features = false, features = ["rt", "rt-multi-thread", "macros", "process", "fs", "io-util", "sync"] }
 toml = { version = "0.8", default-features = false, features = ["parse", "display"] }
 zipcrawl = { version = "2.4", default-features = false, features = ["compress", "serde"] }
 uuid = { version = "1.23.3", features = ["v4", "serde"] }
