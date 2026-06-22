@@ -6,6 +6,7 @@ use crate::core::model::{addon::ManifestAddon, loader::Loader};
 pub struct ConduitManifest {
     pub name: String,
     pub loader: Loader,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub dependencies: Vec<ManifestAddon>,
 }
 
