@@ -32,7 +32,6 @@ impl VersionProvider for FabricProvider {
             let versions = fabric.get_loaders().await?;
             Ok(versions
                 .into_iter()
-                .filter(|v| v.stable)
                 .map(|v| v.version)
                 .collect())
         }
