@@ -3,6 +3,9 @@ use std::future::Future;
 use minecraft_registry_api::error::ApiError;
 use minecraft_registry_api::fabric::FabricClient;
 
+use crate::core::model::addon::AddonKind;
+use crate::core::provider::loader::AddonFolderProvider;
+
 use super::VersionProvider;
 
 pub struct FabricProvider;
@@ -34,6 +37,15 @@ impl VersionProvider for FabricProvider {
                 .into_iter()
                 .map(|v| v.version)
                 .collect())
+        }
+    }
+}
+
+impl AddonFolderProvider for FabricProvider {
+    fn get_addon_folder(&self, r#type: AddonKind) -> Option<&'static str> {
+        match r#type {
+            AddonKind::Mod => Some("mods"),
+            AddonKind::Plugin => None,
         }
     }
 }

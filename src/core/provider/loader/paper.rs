@@ -9,6 +9,9 @@ use super::VersionProvider;
 
 use super::{cmp_versions, is_stable_version};
 
+use crate::core::model::addon::AddonKind;
+use crate::core::provider::loader::AddonFolderProvider;
+
 pub struct PaperProvider;
 
 impl VersionProvider for PaperProvider {
@@ -52,6 +55,15 @@ impl VersionProvider for PaperProvider {
                 .get_builds_by_channel("paper", &game_version, "STABLE")
                 .await?;
             Ok(builds.into_iter().map(|b| b.id.to_string()).collect())
+        }
+    }
+}
+
+impl AddonFolderProvider for PaperProvider {
+    fn get_addon_folder(&self, r#type: AddonKind) -> Option<&'static str> {
+        match r#type {
+            AddonKind::Mod => None,
+            AddonKind::Plugin => Some("plugins"),
         }
     }
 }

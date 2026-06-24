@@ -9,6 +9,9 @@ use super::VersionProvider;
 
 use super::{cmp_versions, is_stable_version};
 
+use crate::core::model::addon::AddonKind;
+use crate::core::provider::loader::AddonFolderProvider;
+
 pub struct PurpurProvider;
 
 impl VersionProvider for PurpurProvider {
@@ -91,6 +94,15 @@ impl VersionProvider for PurpurProvider {
                 })
                 .collect();
             Ok(stable_builds)
+        }
+    }
+}
+
+impl AddonFolderProvider for PurpurProvider {
+    fn get_addon_folder(&self, r#type: AddonKind) -> Option<&'static str> {
+        match r#type {
+            AddonKind::Mod => None,
+            AddonKind::Plugin => Some("plugins"),
         }
     }
 }

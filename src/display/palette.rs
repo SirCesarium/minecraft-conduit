@@ -1,8 +1,5 @@
 // Gruvbox dark medium true-color palette.
 //
-// Macros and indicatif templates use 24-bit colour escapes so pywal/theme
-// overrides don't affect the colours.
-//
 // https://github.com/morhetz/gruvbox
 
 // ── Control sequences ──

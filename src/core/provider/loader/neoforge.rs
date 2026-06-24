@@ -8,6 +8,9 @@ use super::VersionProvider;
 
 use super::{cmp_versions, is_valid_version};
 
+use crate::core::model::addon::AddonKind;
+use crate::core::provider::loader::AddonFolderProvider;
+
 pub struct NeoForgeProvider;
 
 impl VersionProvider for NeoForgeProvider {
@@ -61,6 +64,15 @@ impl VersionProvider for NeoForgeProvider {
                 .collect();
             versions.sort_by(|a, b| cmp_versions(b, a));
             Ok(versions)
+        }
+    }
+}
+
+impl AddonFolderProvider for NeoForgeProvider {
+    fn get_addon_folder(&self, r#type: AddonKind) -> Option<&'static str> {
+        match r#type {
+            AddonKind::Mod => Some("mods"),
+            AddonKind::Plugin => None,
         }
     }
 }

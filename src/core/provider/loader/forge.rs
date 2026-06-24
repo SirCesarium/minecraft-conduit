@@ -8,6 +8,9 @@ use super::VersionProvider;
 
 use super::cmp_versions;
 
+use crate::core::model::addon::AddonKind;
+use crate::core::provider::loader::AddonFolderProvider;
+
 pub struct ForgeProvider;
 
 impl VersionProvider for ForgeProvider {
@@ -48,6 +51,15 @@ impl VersionProvider for ForgeProvider {
             versions.sort();
             versions.dedup();
             Ok(versions)
+        }
+    }
+}
+
+impl AddonFolderProvider for ForgeProvider {
+    fn get_addon_folder(&self, r#type: AddonKind) -> Option<&'static str> {
+        match r#type {
+            AddonKind::Mod => Some("mods"),
+            AddonKind::Plugin => None,
         }
     }
 }

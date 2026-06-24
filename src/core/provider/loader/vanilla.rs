@@ -3,6 +3,9 @@ use minecraft_registry_api::mojang::MojangClient;
 
 use super::VersionProvider;
 
+use crate::core::model::addon::AddonKind;
+use crate::core::provider::loader::AddonFolderProvider;
+
 pub struct VanillaProvider;
 
 impl VersionProvider for VanillaProvider {
@@ -23,5 +26,11 @@ impl VersionProvider for VanillaProvider {
         _game_version: &str,
     ) -> Result<Vec<String>, ApiError> {
         Ok(vec![])
+    }
+}
+
+impl AddonFolderProvider for VanillaProvider {
+    fn get_addon_folder(&self, _: AddonKind) -> Option<&'static str> {
+        None
     }
 }
