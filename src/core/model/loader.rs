@@ -1,8 +1,9 @@
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, EnumIter)]
 #[serde(rename_all = "snake_case")]
 pub enum LoaderKind {
     Vanilla,
@@ -32,7 +33,7 @@ impl fmt::Display for LoaderKind {
 pub struct Loader {
     pub kind: LoaderKind,
     pub game_version: Option<String>,
-    pub version: Option<String>,
+    #[serde(default)]
     pub build: Option<String>,
 }
 
@@ -41,7 +42,6 @@ impl Default for Loader {
         Self {
             kind: LoaderKind::Vanilla,
             game_version: Some(String::new()),
-            version: None,
             build: None,
         }
     }
