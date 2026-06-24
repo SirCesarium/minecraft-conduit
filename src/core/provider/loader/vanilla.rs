@@ -1,0 +1,27 @@
+use minecraft_registry_api::error::ApiError;
+use minecraft_registry_api::mojang::MojangClient;
+
+use super::VersionProvider;
+
+pub struct VanillaProvider;
+
+impl VersionProvider for VanillaProvider {
+    async fn fetch_game_versions(&self, http: &reqwest::Client) -> Result<Vec<String>, ApiError> {
+        let mojang = MojangClient::new(http.clone());
+        let manifest = mojang.get_manifest().await?;
+        Ok(manifest
+            .versions
+            .into_iter()
+            .filter(|v| v.type_field == "release")
+            .map(|v| v.id)
+            .collect())
+    }
+
+    async fn fetch_loader_versions(
+        &self,
+        _http: &reqwest::Client,
+        _game_version: &str,
+    ) -> Result<Vec<String>, ApiError> {
+        Ok(vec![])
+    }
+}
