@@ -43,6 +43,8 @@ macro_rules! info {
     }};
 }
 
+pub mod inquire;
 pub mod palette;
 pub mod progress;
+pub mod prompts;
 pub mod spinner;
