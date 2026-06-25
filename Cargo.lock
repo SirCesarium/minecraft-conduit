@@ -1435,9 +1435,9 @@ dependencies = [
 
 [[package]]
 name = "minecraft_registry_api"
-version = "1.4.0"
+version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42dfb420b9124b32f82118c38cd2e16b1d665fea52232bc8f9f81eb71d1b62d1"
+checksum = "f5bf6d5dc1daa2ceda3b7c28221c7ecbd4b470974fd250f6918c4eccd72a400f"
 dependencies = [
  "cbindgen",
  "quick-xml 0.40.1",
