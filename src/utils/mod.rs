@@ -1,3 +1,5 @@
+pub mod fmt;
+
 use std::{io, path::Path};
 
 pub fn get_dir_name(dir: &Path) -> io::Result<String> {
